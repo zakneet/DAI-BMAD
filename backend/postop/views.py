@@ -1,7 +1,7 @@
 from django.utils import timezone
 from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from common.permissions import IsPostOpStaffGroup
 from rest_framework.response import Response
 
 from audit.services import create_audit_log
@@ -23,7 +23,7 @@ class PostOpCaseViewSet(viewsets.GenericViewSet):
         "patient",
         "postop_stay",
     ).all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsPostOpStaffGroup]
     serializer_class = serializers.Serializer
 
     @action(detail=True, methods=["get"], url_path="summary")

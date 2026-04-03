@@ -1,11 +1,12 @@
 from rest_framework.permissions import BasePermission
 
 
-class HasAllowedRole(BasePermission):
-    allowed_roles = []
+class HasAllowedGroup(BasePermission):
+    allowed_groups = []
 
     def has_permission(self, request, view):
         user = request.user
+
         if not user or not user.is_authenticated:
             return False
 
@@ -13,20 +14,32 @@ class HasAllowedRole(BasePermission):
             return True
 
         user_groups = set(user.groups.values_list("name", flat=True))
-        return bool(user_groups.intersection(set(self.allowed_roles)))
+        return bool(user_groups.intersection(set(self.allowed_groups)))
 
 
-class IsAnesthesist(HasAllowedRole):
-    allowed_roles = ["ANESTHESIST", "ADMIN"]
+class IsAdminGroup(HasAllowedGroup):
+    allowed_groups = ["ADMIN"]
 
 
-class IsIADE(HasAllowedRole):
-    allowed_roles = ["IADE", "ADMIN"]
+class IsAnesthesistGroup(HasAllowedGroup):
+    allowed_groups = ["ANESTHESIST", "ADMIN"]
 
 
-class IsSSPI(HasAllowedRole):
-    allowed_roles = ["SSPI", "ADMIN"]
+class IsIADEGroup(HasAllowedGroup):
+    allowed_groups = ["IADE", "ADMIN"]
 
 
-class IsClinicalStaff(HasAllowedRole):
-    allowed_roles = ["ANESTHESIST", "IADE", "SSPI", "ADMIN"]
+class IsSSPIGroup(HasAllowedGroup):
+    allowed_groups = ["SSPI", "ADMIN"]
+
+
+class IsClinicalStaffGroup(HasAllowedGroup):
+    allowed_groups = ["ANESTHESIST", "IADE", "SSPI", "ADMIN"]
+
+
+class IsPerOpStaffGroup(HasAllowedGroup):
+    allowed_groups = ["ANESTHESIST", "IADE", "ADMIN"]
+
+
+class IsPostOpStaffGroup(HasAllowedGroup):
+    allowed_groups = ["ANESTHESIST", "SSPI", "ADMIN"]

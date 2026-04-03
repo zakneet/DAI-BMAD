@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from common.permissions import IsAnesthesistGroup
 
 from audit.services import create_audit_log
 from .models import (
@@ -25,7 +25,7 @@ from .scoring_engine import compute_all_scores
 class QuestionTemplateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = QuestionTemplate.objects.filter(is_active=True).all()
     serializer_class = QuestionTemplateSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAnesthesistGroup]
 
 
 class PreOpQuestionnaireViewSet(viewsets.ModelViewSet):
@@ -33,7 +33,7 @@ class PreOpQuestionnaireViewSet(viewsets.ModelViewSet):
         "anesthesia_case"
     ).prefetch_related("responses")
     serializer_class = PreOpQuestionnaireSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAnesthesistGroup]
 
     def perform_create(self, serializer):
         questionnaire = serializer.save()
@@ -139,7 +139,7 @@ class PreOpQuestionnaireViewSet(viewsets.ModelViewSet):
 class PreOpQuestionnaireResponseViewSet(viewsets.ModelViewSet):
     queryset = PreOpQuestionnaireResponse.objects.select_related("questionnaire").all()
     serializer_class = PreOpQuestionnaireResponseSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAnesthesistGroup]
 
     def perform_create(self, serializer):
         response = serializer.save()
@@ -157,4 +157,4 @@ class PreOpQuestionnaireResponseViewSet(viewsets.ModelViewSet):
 class ClinicalScoreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ClinicalScore.objects.select_related("anesthesia_case").all()
     serializer_class = ClinicalScoreSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAnesthesistGroup]
