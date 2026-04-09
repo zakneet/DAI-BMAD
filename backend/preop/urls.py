@@ -6,7 +6,6 @@ from .views import (
     PreOpQuestionnaireResponseViewSet,
     ClinicalScoreViewSet,
 )
-
 router = DefaultRouter()
 router.register(r"question-templates", QuestionTemplateViewSet, basename="question-template")
 router.register(r"preop-questionnaires", PreOpQuestionnaireViewSet, basename="preop-questionnaire")
