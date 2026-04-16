@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 import Dashboard from "./pages/Dashboard";
+import Cases from "./pages/Cases";
+import CaseDetail from "./pages/CaseDetail";
 
 function App() {
   return (
@@ -8,6 +10,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/cases" element={<Cases />} />
+        <Route path="/cases/:id" element={<CaseDetail />} />
       </Routes>
     </BrowserRouter>
   );
