@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 
 const statusColors = {
   PRE_OP: "bg-amber-100 text-amber-700",
@@ -12,6 +13,7 @@ const statusColors = {
 export default function Cases() {
   const [cases, setCases] = useState([]);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   useEffect(() => {
     fetchCases();
@@ -25,6 +27,11 @@ export default function Cases() {
       console.error(err);
       alert("Erreur chargement cases");
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   return (
@@ -42,6 +49,13 @@ export default function Cases() {
               Liste des dossiers disponibles avec accès rapide au résumé clinique.
             </p>
           </div>
+
+          <button
+            onClick={handleLogout}
+            className="rounded-lg bg-red-500 px-4 py-2 text-white"
+          >
+            Logout
+          </button>
         </div>
 
         <div className="grid gap-5">

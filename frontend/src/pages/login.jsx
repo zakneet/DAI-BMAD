@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async () => {
     try {
@@ -12,35 +22,40 @@ export default function Login() {
         password,
       });
 
-      localStorage.setItem("access", res.data.access);
-      localStorage.setItem("refresh", res.data.refresh);
+      login({
+        access: res.data.access,
+        refresh: res.data.refresh,
+      });
 
-      window.location.href = "/dashboard";
+      navigate("/dashboard");
     } catch (err) {
+      console.error(err);
       alert("Login failed");
     }
   };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="p-6 bg-white shadow rounded w-80">
-        <h1 className="text-xl font-bold mb-4">DAI Login</h1>
+      <div className="w-80 rounded bg-white p-6 shadow">
+        <h1 className="mb-4 text-xl font-bold">DAI Login</h1>
 
         <input
-          className="border p-2 mb-2 w-full"
+          className="mb-2 w-full border p-2"
           placeholder="Username"
+          value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
 
         <input
           type="password"
-          className="border p-2 mb-4 w-full"
+          className="mb-4 w-full border p-2"
           placeholder="Password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
         <button
-          className="bg-blue-500 text-white w-full py-2 rounded"
+          className="w-full rounded bg-blue-500 py-2 text-white"
           onClick={handleLogin}
         >
           Login

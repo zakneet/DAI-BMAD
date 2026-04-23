@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 
 const statusColors = {
   PRE_OP: "bg-amber-100 text-amber-700",
@@ -21,6 +22,7 @@ function SectionCard({ title, children }) {
 export default function CaseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -37,6 +39,11 @@ export default function CaseDetail() {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   if (!data) {
     return (
       <div className="min-h-screen bg-slate-50 p-8">
@@ -45,17 +52,37 @@ export default function CaseDetail() {
     );
   }
 
-  const { case: caseData, patient, preop_questionnaire, clinical_scores, perop_session, perop_vitals, perop_events, postop_stay, postop_observations, alerts } = data;
+  const {
+    case: caseData,
+    patient,
+    preop_questionnaire,
+    clinical_scores,
+    perop_session,
+    perop_vitals,
+    perop_events,
+    postop_stay,
+    postop_observations,
+    alerts,
+  } = data;
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="mx-auto max-w-6xl">
-        <button
-          onClick={() => navigate("/cases")}
-          className="mb-6 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-        >
-          ← Retour aux dossiers
-        </button>
+        <div className="mb-6 flex items-center justify-between">
+          <button
+            onClick={() => navigate("/cases")}
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+          >
+            ← Retour aux dossiers
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="rounded-lg bg-red-500 px-4 py-2 text-white"
+          >
+            Logout
+          </button>
+        </div>
 
         <div className="mb-8 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 p-8 text-white shadow-lg">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -82,19 +109,19 @@ export default function CaseDetail() {
         </div>
 
         <div className="mb-6 grid gap-4 md:grid-cols-4">
-          <div className="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-400">Patient ID</p>
             <p className="mt-2 truncate font-semibold text-slate-800">{patient.id}</p>
           </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-400">Date naissance</p>
             <p className="mt-2 font-semibold text-slate-800">{patient.birth_date}</p>
           </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-400">Genre</p>
             <p className="mt-2 font-semibold text-slate-800">{patient.gender}</p>
           </div>
-          <div className="rounded-2xl bg-white p-5 shadow-sm border border-slate-200">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-400">Case status</p>
             <p className="mt-2 font-semibold text-slate-800">{caseData.status}</p>
           </div>
@@ -183,7 +210,7 @@ export default function CaseDetail() {
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-semibold text-red-700">{alert.title}</p>
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-red-700 border border-red-200">
+                      <span className="rounded-full border border-red-200 bg-white px-3 py-1 text-xs font-semibold text-red-700">
                         {alert.status}
                       </span>
                     </div>
